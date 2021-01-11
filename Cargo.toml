@@ -1,0 +1,19 @@
+[package]
+name = "rust-elgamal"
+version = "0.1.0"
+authors = ["Eleanor McMurtry <elem0@protonmail.com>"]
+edition = "2018"
+description = "A straightforward implementation of ElGamal using the Ristretto255 elliptic curve group."
+license = "Apache-2.0"
+license-file = "LICENSE"
+
+[features]
+serde1 = [ "curve25519-dalek/serde", "serde"]
+
+[dependencies]
+curve25519-dalek = "3"
+rand = { version = "0.8", features = ["std_rng"] }
+serde = { version = "1", features = ["derive"], optional = true }
+
+[dev-dependencies]
+bincode = "1"
