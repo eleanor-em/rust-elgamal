@@ -2,12 +2,11 @@ use curve25519_dalek::ristretto::{RistrettoPoint, CompressedRistretto};
 use curve25519_dalek::traits::Identity;
 use std::iter::Sum;
 use std::ops::{AddAssign, Sub, Add, SubAssign, Mul, Neg};
-use crate::error::ElGamalError;
+use crate::ElGamalError;
 use rand::{CryptoRng, Rng};
 
 #[cfg(feature = "serde")]
 use serde::{Serialize, Deserialize};
-use crate::ElGamalError;
 
 /// A scalar from the Ristretto elliptic curve group. Used as blinding factors.
 pub type Scalar = curve25519_dalek::scalar::Scalar;
