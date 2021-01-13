@@ -35,6 +35,17 @@ pub struct DecryptionKey {
 impl DecryptionKey {
     /// Generate a new ElGamal decryption key using the randomness source `rng`, together with
     /// its corresponding encryption key.
+    ///
+    /// # Example
+    ///
+    /// ```rust
+    /// use rand::rngs::StdRng;
+    /// use rand::SeedableRng;
+    /// use rust_elgamal::DecryptionKey;
+    ///
+    /// let mut rng = StdRng::from_entropy();
+    /// let dec_key = DecryptionKey::new(&mut rng);
+    /// ```
     pub fn new<R: RngCore + CryptoRng>(mut rng: R) -> Self {
         let secret = random_scalar(&mut rng);
         let ek = EncryptionKey(&secret * &RISTRETTO_BASEPOINT_TABLE);
@@ -42,6 +53,22 @@ impl DecryptionKey {
     }
 
     /// Decrypt the ciphertext `ct`.
+    ///
+    /// # Example
+    ///
+    /// ```rust
+    /// use rand::rngs::StdRng;
+    /// use rand::SeedableRng;
+    /// use rust_elgamal::{DecryptionKey, GENERATOR_TABLE, Scalar};
+    ///
+    /// let mut rng = StdRng::from_entropy();
+    /// let dec_key = DecryptionKey::new(&mut rng);
+    ///
+    /// let m = &Scalar::from(5u32) * &GENERATOR_TABLE;
+    /// let ct = dec_key.encryption_key().encrypt(m, &mut rng);
+    /// let decrypted = dec_key.decrypt(ct);
+    /// assert_eq!(m, decrypted);
+    /// ```
     pub fn decrypt(&self, ct: Ciphertext) -> RistrettoPoint {
         ct.1 - ct.0 * &self.secret
     }

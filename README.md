@@ -19,7 +19,7 @@ Because this crate is in a pre-release state (major version 0), minor versions m
 
 ## Example
 ```rust
-use rand::prelude::StdRng;
+use rand::rngs::StdRng;
 use rand::SeedableRng;
 use rust_elgamal::{DecryptionKey, Scalar, GENERATOR_TABLE};
 
@@ -27,12 +27,12 @@ const N: usize = 100;
 
 let mut rng = StdRng::from_entropy();
 let dec_key = DecryptionKey::new(&mut rng);
-let enc_key = dk.encryption_key();
+let enc_key = dec_key.encryption_key();
 
 let message = &Scalar::from(5u32) * &GENERATOR_TABLE;
 let encrypted = enc_key.encrypt(message, &mut rng);
 let decrypted = dec_key.decrypt(encrypted);
-assert_eq!(m, decrypted);
+assert_eq!(message, decrypted);
 ```
 
 ## Features

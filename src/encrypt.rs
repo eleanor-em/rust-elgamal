@@ -38,6 +38,21 @@ impl EncryptionKey {
     /// This is computationally intensive to decrypt to the original scalar, and not relevant to
     /// the majority of users. This function takes advantage of a fast implementation for multiple
     /// multiplications in `curve25519-dalek`.
+    ///
+    /// # Example
+    ///
+    /// ```rust
+    /// use rand::rngs::StdRng;
+    /// use rand::SeedableRng;
+    /// use rust_elgamal::{DecryptionKey, GENERATOR_TABLE, Scalar};
+    ///
+    /// let mut rng = StdRng::from_entropy();
+    /// let dec_key = DecryptionKey::new(&mut rng);
+    /// let enc_key = dec_key.encryption_key();
+    ///
+    /// let m = Scalar::from(5u32);
+    /// let encrypted = enc_key.exp_encrypt(m, &mut rng);
+    /// ```
     pub fn exp_encrypt<R: RngCore + CryptoRng>(&self, m: Scalar, mut rng: R) -> Ciphertext {
         self.exp_encrypt_with(m, random_scalar(&mut rng))
     }
@@ -47,6 +62,22 @@ impl EncryptionKey {
     /// This is computationally intensive to decrypt to the original scalar, and not relevant to
     /// the majority of users. This function takes advantage of a fast implementation for multiple
     /// multiplications in `curve25519-dalek`.
+    ///
+    /// # Example
+    ///
+    /// ```rust
+    /// use rand::rngs::StdRng;
+    /// use rand::SeedableRng;
+    /// use rust_elgamal::{DecryptionKey, GENERATOR_TABLE, Scalar};
+    ///
+    /// let mut rng = StdRng::from_entropy();
+    /// let dec_key = DecryptionKey::new(&mut rng);
+    /// let enc_key = dec_key.encryption_key();
+    ///
+    /// let m = Scalar::from(5u32);
+    /// let r = Scalar::from(10u32);
+    /// let encrypted = enc_key.exp_encrypt_with(m, r);
+    /// ```
     pub fn exp_encrypt_with(&self, m: Scalar, r: Scalar) -> Ciphertext {
         let c1 = &r * &RISTRETTO_BASEPOINT_TABLE;
         // mG + rY
@@ -55,11 +86,42 @@ impl EncryptionKey {
     }
 
     /// Encrypt the curve point `m` with a randomly-generated blinding factor.
+    ///
+    /// # Example
+    ///
+    /// ```rust
+    /// use rand::rngs::StdRng;
+    /// use rand::SeedableRng;
+    /// use rust_elgamal::{DecryptionKey, GENERATOR_TABLE, Scalar};
+    ///
+    /// let mut rng = StdRng::from_entropy();
+    /// let dec_key = DecryptionKey::new(&mut rng);
+    /// let enc_key = dec_key.encryption_key();
+    ///
+    /// let m = &Scalar::from(5u32) * &GENERATOR_TABLE;
+    /// let encrypted = enc_key.encrypt(m, &mut rng);
+    /// ```
     pub fn encrypt<R: RngCore + CryptoRng>(&self, m: RistrettoPoint, mut rng: R) -> Ciphertext {
         self.encrypt_with(m, random_scalar(&mut rng))
     }
 
     /// Encrypt the curve point `m` with the blinding factor `r`.
+    ///
+    /// # Example
+    ///
+    /// ```rust
+    /// use rand::rngs::StdRng;
+    /// use rand::SeedableRng;
+    /// use rust_elgamal::{DecryptionKey, GENERATOR_TABLE, Scalar};
+    ///
+    /// let mut rng = StdRng::from_entropy();
+    /// let dec_key = DecryptionKey::new(&mut rng);
+    /// let enc_key = dec_key.encryption_key();
+    ///
+    /// let m = &Scalar::from(5u32) * &GENERATOR_TABLE;
+    /// let r = Scalar::from(10u32);
+    /// let encrypted = enc_key.encrypt_with(m, r);
+    /// ```
     pub fn encrypt_with(&self, m: RistrettoPoint, r: Scalar) -> Ciphertext {
         let c1 = &r * &RISTRETTO_BASEPOINT_TABLE;
         let c2 = m + r * &self.0;
@@ -68,6 +130,23 @@ impl EncryptionKey {
 
     /// Re-randomise the ciphertext `ct` with a randomly-generated blinding factor.
     /// This will generate a new encryption of the same curve point.
+    ///
+    /// # Example
+    ///
+    /// ```rust
+    /// use rand::rngs::StdRng;
+    /// use rand::SeedableRng;
+    /// use rust_elgamal::{DecryptionKey, GENERATOR_TABLE, Scalar};
+    ///
+    /// let mut rng = StdRng::from_entropy();
+    /// let dec_key = DecryptionKey::new(&mut rng);
+    /// let enc_key = dec_key.encryption_key();
+    ///
+    /// let m = &Scalar::from(5u32) * &GENERATOR_TABLE;
+    /// let ct1 = enc_key.encrypt(m, &mut rng);
+    /// let ct2 = enc_key.rerandomise(ct1, &mut rng);
+    /// assert_eq!(dec_key.decrypt(ct1), dec_key.decrypt(ct2));
+    /// ```
     pub fn rerandomise<R: RngCore + CryptoRng>(&self, ct: Ciphertext, mut rng: R) -> Ciphertext {
         self.rerandomise_with(ct, random_scalar(&mut rng))
     }
@@ -75,6 +154,26 @@ impl EncryptionKey {
 
     /// Re-randomise the ciphertext `ct` with the provided blinding factor.
     /// This will generate a new encryption of the same curve point.
+    ///
+    /// # Example
+    ///
+    /// ```rust
+    /// use rand::rngs::StdRng;
+    /// use rand::SeedableRng;
+    /// use rust_elgamal::{DecryptionKey, GENERATOR_TABLE, Scalar};
+    ///
+    /// let mut rng = StdRng::from_entropy();
+    /// let dec_key = DecryptionKey::new(&mut rng);
+    /// let enc_key = dec_key.encryption_key();
+    ///
+    /// let m = &Scalar::from(5u32) * &GENERATOR_TABLE;
+    /// let ct1 = enc_key.encrypt(m, &mut rng);
+    ///
+    /// let r = Scalar::from(10u32);
+    /// let ct2 = enc_key.rerandomise_with(ct1, r);
+    ///
+    /// assert_eq!(dec_key.decrypt(ct1), dec_key.decrypt(ct2));
+    /// ```
     pub fn rerandomise_with(&self, ct: Ciphertext, r: Scalar) -> Ciphertext {
         let c1 = ct.0 + &r * &RISTRETTO_BASEPOINT_TABLE;
         let c2 = ct.1 + &self.0 * r;

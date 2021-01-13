@@ -24,6 +24,7 @@ use curve25519_dalek::scalar::Scalar;
 use serde::{Serialize, Deserialize};
 
 /// An ElGamal ciphertext.
+///
 /// Represented as a pair of the form (rG, M + rY) where r is a blinding factor, G is the group
 /// generator, M is the message, and Y is the public key.
 #[derive(Copy, Clone, PartialEq, Eq)]
