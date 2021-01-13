@@ -6,6 +6,7 @@ edition = "2018"
 license = "Apache-2.0"
 readme = "README.md"
 repository = "https://github.com/eleanor-em/rust-elgamal"
+documentation = "https://docs.rs/rust-elgamal"
 categories = ["cryptography", "no-std"]
 keywords = ["cryptography", "crypto", "ristretto", "curve25519", "ristretto255", "elgamal"]
 description = "A straightforward implementation of ElGamal homomorphic encryption using the ristretto255 elliptic curve group."
