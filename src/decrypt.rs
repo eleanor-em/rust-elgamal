@@ -22,9 +22,10 @@ use rand_core::{CryptoRng, RngCore};
 use serde::{Deserialize, Deserializer, Serialize, de::Visitor};
 
 use crate::{Ciphertext, EncryptionKey, random_scalar};
+use core::fmt::{Debug, Formatter};
 
 /// An ElGamal decryption key (also called a private key in other implementations).
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 #[cfg_attr(feature = "enable-serde", derive(Serialize))]
 pub struct DecryptionKey {
     pub(crate) secret: Scalar,
@@ -76,6 +77,12 @@ impl DecryptionKey {
     /// Retrieve the encryption key corresponding to this decryption key.
     pub fn encryption_key(&self) -> &EncryptionKey {
         &self.ek
+    }
+}
+
+impl Debug for DecryptionKey {
+    fn fmt(&self, f: &mut Formatter<'_>) -> core::fmt::Result {
+        write!(f, "DecryptionKey({:?})", self.secret)
     }
 }
 
