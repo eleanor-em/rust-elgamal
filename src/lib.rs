@@ -20,6 +20,7 @@
 mod ciphertext;
 mod decrypt;
 mod encrypt;
+pub mod util;
 
 use curve25519_dalek::constants::{RISTRETTO_BASEPOINT_POINT, RISTRETTO_BASEPOINT_TABLE};
 use curve25519_dalek::ristretto::RistrettoBasepointTable;
@@ -30,7 +31,6 @@ pub use curve25519_dalek::ristretto::RistrettoPoint;
 pub use ciphertext::Ciphertext;
 pub use decrypt::DecryptionKey;
 pub use encrypt::EncryptionKey;
-use rand_core::{RngCore, CryptoRng};
 
 /// The group generator as a single point.
 /// If you're trying to create a scalar multiple of the generator, you probably want
@@ -41,26 +41,18 @@ pub const GENERATOR_POINT: RistrettoPoint = RISTRETTO_BASEPOINT_POINT;
 /// produce a scalar multiple of the generator.
 pub const GENERATOR_TABLE: RistrettoBasepointTable = RISTRETTO_BASEPOINT_TABLE;
 
-/// Generate a random scalar from the provided randomness source.
-///
-/// Note: Unfortunately [curve25519-dalek](https://docs.rs/curve25519-dalek/3.0.2/curve25519_dalek/)
-/// uses an old version of `rand`, so we need to copy its implementation of `Scalar::random`.
-pub fn random_scalar<R: RngCore + CryptoRng>(mut rng: R) -> Scalar {
-    let mut scalar_bytes = [0u8; 64];
-    rng.fill_bytes(&mut scalar_bytes);
-    Scalar::from_bytes_mod_order_wide(&scalar_bytes)
-}
-
 #[cfg(test)]
 mod tests {
+    use curve25519_dalek::ristretto::RistrettoPoint;
     use rand::prelude::StdRng;
     use rand_core::{SeedableRng, CryptoRng, RngCore};
+
     use crate::DecryptionKey;
-    use curve25519_dalek::ristretto::RistrettoPoint;
 
     // Unfortunately [curve25519-dalek](https://docs.rs/curve25519-dalek/3.0.2/curve25519_dalek/)
     // uses an old version of `rand`, so we need to copy its implementation of
     // `RistrettoPoint::random`.
+    // Source: https://github.com/dalek-cryptography/curve25519-dalek/blob/master/src/ristretto.rs
     fn random_point<R: RngCore + CryptoRng>(mut rng: R) -> RistrettoPoint {
         let mut uniform_bytes = [0u8; 64];
         rng.fill_bytes(&mut uniform_bytes);
@@ -68,6 +60,7 @@ mod tests {
         RistrettoPoint::from_uniform_bytes(&uniform_bytes)
     }
 
+    // Test that encrypting a point and decrypting the result does not change a point.
     #[test]
     fn encrypt_decrypt() {
         const N: usize = 100;
@@ -84,6 +77,7 @@ mod tests {
         }
     }
 
+    // Test that re-randomising an encrypted point does not change the decrypted result.
     #[test]
     fn rerandomisation() {
         const N: usize = 100;
@@ -101,6 +95,7 @@ mod tests {
         }
     }
 
+    // Test that the decrypted sum of two ciphertexts is equal to the sum of the original points.
     #[test]
     fn homomorphism() {
         const N: usize = 100;

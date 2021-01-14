@@ -31,9 +31,24 @@ use serde::{Serialize, Deserialize};
 #[cfg_attr(feature = "enable-serde", derive(Serialize, Deserialize))]
 pub struct Ciphertext(pub(crate) RistrettoPoint, pub(crate) RistrettoPoint);
 
+impl Ciphertext {
+    /// Returns the pair-of-points representation of the ciphertext. Intended for advanced use only.
+    pub fn inner(&self) -> (RistrettoPoint, RistrettoPoint) {
+        (self.0, self.1)
+    }
+}
+
 impl Debug for Ciphertext {
     fn fmt(&self, f: &mut Formatter<'_>) -> core::fmt::Result {
         write!(f, "Ciphertext({:?}, {:?})", self.0.compress(), self.1.compress())
+    }
+}
+
+// Conversion traits
+
+impl From<(RistrettoPoint, RistrettoPoint)> for Ciphertext {
+    fn from(pair: (RistrettoPoint, RistrettoPoint)) -> Self {
+        Self(pair.0, pair.1)
     }
 }
 
@@ -121,7 +136,7 @@ impl Neg for &Ciphertext {
     type Output = Ciphertext;
 
     fn neg(self) -> Self::Output {
-        Ciphertext(-self.0.clone(), -self.1.clone())
+        Ciphertext(-self.0, -self.1)
     }
 }
 

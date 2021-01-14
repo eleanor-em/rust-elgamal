@@ -13,6 +13,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use core::fmt::{Debug, Formatter};
+
 use curve25519_dalek::constants::RISTRETTO_BASEPOINT_TABLE;
 use curve25519_dalek::ristretto::RistrettoPoint;
 use curve25519_dalek::scalar::Scalar;
@@ -21,8 +23,8 @@ use rand_core::{CryptoRng, RngCore};
 #[cfg(feature = "enable-serde")]
 use serde::{Deserialize, Deserializer, Serialize, de::Visitor};
 
-use crate::{Ciphertext, EncryptionKey, random_scalar};
-use core::fmt::{Debug, Formatter};
+use crate::{Ciphertext, EncryptionKey};
+use crate::util::random_scalar;
 
 /// An ElGamal decryption key (also called a private key in other implementations).
 #[derive(Copy, Clone, Eq, PartialEq)]
@@ -135,10 +137,12 @@ impl<'de> Deserialize<'de> for DecryptionKey {
 #[cfg(feature = "enable-serde")]
 #[cfg(test)]
 mod tests {
-    use crate::DecryptionKey;
     use rand::prelude::StdRng;
     use rand_core::SeedableRng;
 
+    use crate::DecryptionKey;
+
+    // Test that serialising and deserialising a decryption key produces an unchanged result.
     #[test]
     fn serde_decryption_key() {
         const N: usize = 100;

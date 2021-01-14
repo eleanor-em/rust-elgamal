@@ -24,7 +24,8 @@ use rand_core::{RngCore, CryptoRng};
 #[cfg(feature = "enable-serde")]
 use serde::{Serialize, Deserialize};
 
-use crate::{Ciphertext, DecryptionKey, random_scalar};
+use crate::{Ciphertext, DecryptionKey};
+use crate::util::random_scalar;
 
 /// An ElGamal encryption key (also called a public key in other implementations).
 /// To create a new encryption key, see [DecryptionKey](crate::decrypt::DecryptionKey).
