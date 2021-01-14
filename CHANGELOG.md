@@ -1,5 +1,6 @@
-### 0.3.1 (2021-01-14)
+### 0.3.2 (2021-01-14)
 * remove superfluous `zkp` dependency. I considered adding ZKP support to this crate but decided it was outside the scope.
+* expose `random_point` in `util`
 
 ### 0.3.0 (2021-01-14)
 * relocated `random_scalar` to a `util` module

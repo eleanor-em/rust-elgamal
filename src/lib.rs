@@ -43,22 +43,11 @@ pub const GENERATOR_TABLE: RistrettoBasepointTable = RISTRETTO_BASEPOINT_TABLE;
 
 #[cfg(test)]
 mod tests {
-    use curve25519_dalek::ristretto::RistrettoPoint;
     use rand::prelude::StdRng;
-    use rand_core::{SeedableRng, CryptoRng, RngCore};
+    use rand_core::SeedableRng;
 
     use crate::DecryptionKey;
-
-    // Unfortunately [curve25519-dalek](https://docs.rs/curve25519-dalek/3.0.2/curve25519_dalek/)
-    // uses an old version of `rand`, so we need to copy its implementation of
-    // `RistrettoPoint::random`.
-    // Source: https://github.com/dalek-cryptography/curve25519-dalek/blob/master/src/ristretto.rs
-    fn random_point<R: RngCore + CryptoRng>(mut rng: R) -> RistrettoPoint {
-        let mut uniform_bytes = [0u8; 64];
-        rng.fill_bytes(&mut uniform_bytes);
-
-        RistrettoPoint::from_uniform_bytes(&uniform_bytes)
-    }
+    use crate::util::random_point;
 
     // Test that encrypting a point and decrypting the result does not change a point.
     #[test]
