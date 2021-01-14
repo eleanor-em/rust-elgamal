@@ -1,6 +1,6 @@
 [package]
 name = "rust-elgamal"
-version = "0.3.0"
+version = "0.3.1"
 authors = ["Eleanor McMurtry <elem0@protonmail.com>"]
 edition = "2018"
 license = "Apache-2.0"
@@ -16,7 +16,7 @@ nightly = ["curve25519-dalek/nightly"]
 default = ["std"]
 # cannot call the feature "serde" (yet)
 enable-serde = ["serde", "curve25519-dalek/serde"]
-simd_backend = ["nightly", "curve25519-dalek/simd_backend", "zkp/simd_backend"]
+simd_backend = ["nightly", "curve25519-dalek/simd_backend"]
 std = ["curve25519-dalek/std", "rand_core/std", "serde/std"]
 
 [dependencies]
@@ -24,7 +24,6 @@ std = ["curve25519-dalek/std", "rand_core/std", "serde/std"]
 curve25519-dalek = { version = "3", default_features = false, features = ["alloc", "u64_backend"] }
 rand_core = { version = "0.6", default_features = false }
 serde = { version = "1", default_features = false, features = ["derive"], optional = true }
-zkp = { version = "0.7", optional = true }
 
 [dev-dependencies]
 bincode = "1"
