@@ -171,3 +171,30 @@ impl Mul<&Scalar> for &Ciphertext {
         Ciphertext(self.0 * rhs, self.1 * rhs)
     }
 }
+
+#[cfg(feature = "enable-serde")]
+#[cfg(test)]
+mod tests {
+    use rand::prelude::StdRng;
+    use rand_core::SeedableRng;
+
+    use crate::DecryptionKey;
+    use crate::util::random_point;
+
+    #[test]
+    fn serde_ciphertext() {
+        const N: usize = 100;
+
+        let mut rng = StdRng::from_entropy();
+        let dk = DecryptionKey::new(&mut rng);
+
+        for _ in 0..N {
+            let ct = dk.encryption_key().encrypt(random_point(&mut rng), &mut rng);
+            let encoded = bincode::serialize(&ct).unwrap();
+            assert_eq!(encoded.len(), 64);
+
+            let decoded = bincode::deserialize(&encoded).unwrap();
+            assert_eq!(ct, decoded);
+        }
+    }
+}
