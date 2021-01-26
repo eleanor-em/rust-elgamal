@@ -22,11 +22,12 @@ mod decrypt;
 mod encrypt;
 pub mod util;
 
-use curve25519_dalek::constants::{RISTRETTO_BASEPOINT_POINT, RISTRETTO_BASEPOINT_TABLE};
+use curve25519_dalek::constants::{RISTRETTO_BASEPOINT_POINT, RISTRETTO_BASEPOINT_TABLE, RISTRETTO_BASEPOINT_COMPRESSED};
 use curve25519_dalek::ristretto::RistrettoBasepointTable;
 
 pub use curve25519_dalek::scalar::Scalar;
 pub use curve25519_dalek::ristretto::RistrettoPoint;
+pub use curve25519_dalek::ristretto::CompressedRistretto;
 
 pub use ciphertext::Ciphertext;
 pub use decrypt::DecryptionKey;
@@ -36,6 +37,11 @@ pub use encrypt::EncryptionKey;
 /// If you're trying to create a scalar multiple of the generator, you probably want
 /// [GENERATOR_TABLE](crate::GENERATOR_TABLE) instead.
 pub const GENERATOR_POINT: RistrettoPoint = RISTRETTO_BASEPOINT_POINT;
+
+/// The group generator as a single point, compressed for transit.
+/// If you're trying to create a scalar multiple of the generator, you probably want
+/// [GENERATOR_TABLE](crate::GENERATOR_TABLE) instead.
+pub const GENERATOR_POINT_COMPRESSED: CompressedRistretto = RISTRETTO_BASEPOINT_COMPRESSED;
 
 /// The group generator as a table of precomputed multiples. This is the most efficient way to
 /// produce a scalar multiple of the generator.
