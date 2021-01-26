@@ -29,6 +29,10 @@ pub use curve25519_dalek::scalar::Scalar;
 pub use curve25519_dalek::ristretto::RistrettoPoint;
 pub use curve25519_dalek::ristretto::CompressedRistretto;
 
+pub use curve25519_dalek::traits::Identity;
+pub use curve25519_dalek::traits::IsIdentity;
+pub use curve25519_dalek::traits::MultiscalarMul;
+
 pub use ciphertext::Ciphertext;
 pub use decrypt::DecryptionKey;
 pub use encrypt::EncryptionKey;
