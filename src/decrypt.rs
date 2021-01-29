@@ -24,7 +24,6 @@ use rand_core::{CryptoRng, RngCore};
 use serde::{Deserialize, Deserializer, Serialize, de::Visitor};
 
 use crate::{Ciphertext, EncryptionKey};
-use crate::util::random_scalar;
 
 /// An ElGamal decryption key (also called a private key in other implementations).
 #[derive(Copy, Clone, Eq, PartialEq)]
@@ -49,8 +48,8 @@ impl DecryptionKey {
     /// let mut rng = StdRng::from_entropy();
     /// let dec_key = DecryptionKey::new(&mut rng);
     /// ```
-    pub fn new<R: RngCore + CryptoRng>(mut rng: R) -> Self {
-        let secret = random_scalar(&mut rng);
+    pub fn new<R: RngCore + CryptoRng>(rng: &mut R) -> Self {
+        let secret = Scalar::random(rng);
         let ek = EncryptionKey(&secret * &RISTRETTO_BASEPOINT_TABLE);
         Self { secret, ek }
     }

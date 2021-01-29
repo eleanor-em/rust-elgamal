@@ -1,3 +1,7 @@
+### 0.4.0 (2021-01-29)
+* replace `curve25519-dalek` dependency with a fork
+* bump `curve25519-dalek` to version 4
+
 ### 0.3.2 (2021-01-14)
 * remove superfluous `zkp` dependency. I considered adding ZKP support to this crate but decided it was outside the scope.
 * expose `random_point` in `util`

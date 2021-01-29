@@ -1,6 +1,6 @@
 [package]
 name = "rust-elgamal"
-version = "0.3.2"
+version = "0.4.0"
 authors = ["Eleanor McMurtry <elem0@protonmail.com>"]
 edition = "2018"
 license = "Apache-2.0"
@@ -21,7 +21,7 @@ std = ["curve25519-dalek/std", "rand_core/std", "serde/std"]
 
 [dependencies]
 # simd_backend extends u64_backend
-curve25519-dalek = { package = "curve25519-dalek-ng", version = "3", default_features = false, features = ["alloc", "u64_backend"] }
+curve25519-dalek = { package = "curve25519-dalek-ng", version = "4", default_features = false, features = ["alloc", "u64_backend"] }
 rand_core = { version = "0.6", default_features = false }
 serde = { version = "1", default_features = false, features = ["derive"], optional = true }
 

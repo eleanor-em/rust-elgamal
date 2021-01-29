@@ -25,7 +25,6 @@ use rand_core::{RngCore, CryptoRng};
 use serde::{Serialize, Deserialize};
 
 use crate::{Ciphertext, DecryptionKey};
-use crate::util::random_scalar;
 
 /// An ElGamal encryption key (also called a public key in other implementations).
 /// To create a new encryption key, see [DecryptionKey](crate::decrypt::DecryptionKey).
@@ -54,8 +53,8 @@ impl EncryptionKey {
     /// let m = Scalar::from(5u32);
     /// let encrypted = enc_key.exp_encrypt(m, &mut rng);
     /// ```
-    pub fn exp_encrypt<R: RngCore + CryptoRng>(&self, m: Scalar, mut rng: R) -> Ciphertext {
-        self.exp_encrypt_with(m, random_scalar(&mut rng))
+    pub fn exp_encrypt<R: RngCore + CryptoRng>(&self, m: Scalar, rng: &mut R) -> Ciphertext {
+        self.exp_encrypt_with(m, Scalar::random(rng))
     }
 
     /// Encrypt `mG` with the blinding factor `r`, where `G` is the group generator.
@@ -102,8 +101,8 @@ impl EncryptionKey {
     /// let m = &Scalar::from(5u32) * &GENERATOR_TABLE;
     /// let encrypted = enc_key.encrypt(m, &mut rng);
     /// ```
-    pub fn encrypt<R: RngCore + CryptoRng>(&self, m: RistrettoPoint, mut rng: R) -> Ciphertext {
-        self.encrypt_with(m, random_scalar(&mut rng))
+    pub fn encrypt<R: RngCore + CryptoRng>(&self, m: RistrettoPoint, rng: &mut R) -> Ciphertext {
+        self.encrypt_with(m, Scalar::random(rng))
     }
 
     /// Encrypt the curve point `m` with the blinding factor `r`.
@@ -148,8 +147,8 @@ impl EncryptionKey {
     /// let ct2 = enc_key.rerandomise(ct1, &mut rng);
     /// assert_eq!(dec_key.decrypt(ct1), dec_key.decrypt(ct2));
     /// ```
-    pub fn rerandomise<R: RngCore + CryptoRng>(&self, ct: Ciphertext, mut rng: R) -> Ciphertext {
-        self.rerandomise_with(ct, random_scalar(&mut rng))
+    pub fn rerandomise<R: RngCore + CryptoRng>(&self, ct: Ciphertext, rng: &mut R) -> Ciphertext {
+        self.rerandomise_with(ct, Scalar::random(rng))
     }
 
 

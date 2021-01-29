@@ -20,7 +20,6 @@
 mod ciphertext;
 mod decrypt;
 mod encrypt;
-pub mod util;
 
 use curve25519_dalek::constants::{RISTRETTO_BASEPOINT_POINT, RISTRETTO_BASEPOINT_TABLE, RISTRETTO_BASEPOINT_COMPRESSED};
 use curve25519_dalek::ristretto::RistrettoBasepointTable;
@@ -56,8 +55,7 @@ mod tests {
     use rand::prelude::StdRng;
     use rand_core::SeedableRng;
 
-    use crate::DecryptionKey;
-    use crate::util::random_point;
+    use crate::{DecryptionKey, RistrettoPoint};
 
     // Test that encrypting a point and decrypting the result does not change a point.
     #[test]
@@ -69,7 +67,7 @@ mod tests {
         let ek = dk.encryption_key();
 
         for _ in 0..N {
-            let m = random_point(&mut rng);
+            let m = RistrettoPoint::random(&mut rng);
             let ct = ek.encrypt(m, &mut rng);
             let decrypted = dk.decrypt(ct);
             assert_eq!(m, decrypted);
@@ -84,7 +82,7 @@ mod tests {
         let mut rng = StdRng::from_entropy();
         let dk = DecryptionKey::new(&mut rng);
         let ek = dk.encryption_key();
-        let m = random_point(&mut rng);
+        let m = RistrettoPoint::random(&mut rng);
         let ct = ek.encrypt(m, &mut rng);
 
         for _ in 0..N {
@@ -104,8 +102,8 @@ mod tests {
         let ek = dk.encryption_key();
 
         for _ in 0..N {
-            let m1 = random_point(&mut rng);
-            let m2 = random_point(&mut rng);
+            let m1 = RistrettoPoint::random(&mut rng);
+            let m2 = RistrettoPoint::random(&mut rng);
             let sum = m1 + m2;
             let ct1 = ek.encrypt(m1, &mut rng);
             let ct2 = ek.encrypt(m2, &mut rng);

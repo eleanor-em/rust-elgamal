@@ -178,8 +178,7 @@ mod tests {
     use rand::prelude::StdRng;
     use rand_core::SeedableRng;
 
-    use crate::DecryptionKey;
-    use crate::util::random_point;
+    use crate::{DecryptionKey, RistrettoPoint};
 
     #[test]
     fn serde_ciphertext() {
@@ -189,7 +188,7 @@ mod tests {
         let dk = DecryptionKey::new(&mut rng);
 
         for _ in 0..N {
-            let ct = dk.encryption_key().encrypt(random_point(&mut rng), &mut rng);
+            let ct = dk.encryption_key().encrypt(RistrettoPoint::random(&mut rng), &mut rng);
             let encoded = bincode::serialize(&ct).unwrap();
             assert_eq!(encoded.len(), 64);
 
