@@ -1,6 +1,6 @@
 ### 0.4.0 (2021-01-29)
 * replace `curve25519-dalek` dependency with a fork
-* bump `curve25519-dalek` to version 4
+* bump `curve25519-dalek` to version 4, removing the need for the `util` module (as `curve25519-dalek` now uses `rand-core` 0.6)
 
 ### 0.3.2 (2021-01-14)
 * remove superfluous `zkp` dependency. I considered adding ZKP support to this crate but decided it was outside the scope.
