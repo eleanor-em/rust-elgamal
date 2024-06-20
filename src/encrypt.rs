@@ -147,6 +147,7 @@ impl EncryptionKey {
     /// let ct2 = enc_key.rerandomise(ct1, &mut rng);
     /// assert_eq!(dec_key.decrypt(ct1), dec_key.decrypt(ct2));
     /// ```
+    #[must_use = "the Ciphertext input it's not mutated, the function returns the new rerandomised Ciphertext"]
     pub fn rerandomise<R: RngCore + CryptoRng>(&self, ct: Ciphertext, rng: &mut R) -> Ciphertext {
         self.rerandomise_with(ct, Scalar::random(rng))
     }
@@ -174,6 +175,7 @@ impl EncryptionKey {
     ///
     /// assert_eq!(dec_key.decrypt(ct1), dec_key.decrypt(ct2));
     /// ```
+    #[must_use = "the Ciphertext input it's not mutated, the function returns the new rerandomised Ciphertext"]
     pub fn rerandomise_with(&self, ct: Ciphertext, r: Scalar) -> Ciphertext {
         let c1 = ct.0 + &r * &RISTRETTO_BASEPOINT_TABLE;
         let c2 = ct.1 + &self.0 * r;
